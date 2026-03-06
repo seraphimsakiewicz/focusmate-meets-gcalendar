@@ -1,0 +1,35 @@
+/* overlay.css — Injected into Focusmate page */
+
+.gcal-overlay {
+  position: absolute;
+  border: 2px solid rgba(66, 133, 244, 0.7);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  padding: 4px 8px;
+  pointer-events: none;
+  z-index: 50;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  transition: opacity 0.15s ease;
+}
+
+.gcal-overlay .gcal-title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.gcal-overlay .gcal-time {
+  font-weight: 400;
+  opacity: 0.75;
+  font-size: 10px;
+  white-space: nowrap;
+  line-height: 1.3;
+}
