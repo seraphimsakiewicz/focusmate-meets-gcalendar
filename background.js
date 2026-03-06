@@ -99,10 +99,9 @@ async function fetchAllEvents(dateRange) {
   if (selectedCalendars && selectedCalendars.length > 0) {
     calendars = selectedCalendars;
   } else {
-    // Default: primary calendar only
+    // Default: all calendars
     const calList = await fetchCalendarList(token);
-    const primary = calList.find(c => c.primary);
-    calendars = primary ? [{ id: primary.id, color: primary.color }] : [];
+    calendars = calList.map(c => ({ id: c.id, color: c.color }));
   }
 
   // Fetch events from all selected calendars in parallel
