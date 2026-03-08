@@ -14,6 +14,7 @@
   let contentDiv = null;
   let renderDebounceTimer = null;
   let lastDateRangeKey = '';
+  let isRendering = false;
 
   const RENDER_DEBOUNCE_MS = 250;
   const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -81,8 +82,16 @@
     detectAndRender(fmCal);
 
     // Watch for DOM changes (view switch, date navigation)
-    const calObserver = new MutationObserver(() => {
-      if (enabled) debouncedRender(fmCal);
+    const calObserver = new MutationObserver((mutations) => {
+      if (!enabled || isRendering) return;
+      // Ignore mutations caused by our own overlays
+      const isOwnMutation = mutations.every(m =>
+        [...m.addedNodes, ...m.removedNodes].every(n =>
+          n.classList && n.classList.contains('gcal-overlay')
+        )
+      );
+      if (isOwnMutation) return;
+      debouncedRender(fmCal);
     });
 
     calObserver.observe(fmCal, { childList: true, subtree: true });
@@ -278,9 +287,13 @@
   }
 
   function renderOverlays() {
+    isRendering = true;
     removeOverlays();
 
-    if (!enabled || !gridParams || !contentDiv) return;
+    if (!enabled || !gridParams || !contentDiv) {
+      isRendering = false;
+      return;
+    }
 
     let rendered = 0;
 
@@ -322,6 +335,7 @@
       rendered++;
     });
 
+    isRendering = false;
     console.log(`[GCal Overlay] Rendered ${rendered} overlays`);
   }
 
@@ -338,6 +352,8 @@
     if (!gridParams) return;
 
     currentColumns = detectColumns(fmCal);
+    console.log('[GCal Overlay] Columns:', JSON.stringify(currentColumns));
+    console.log('[GCal Overlay] Events:', currentEvents.map(e => `${e.date} ${e.start}-${e.end} ${e.title}`));
     const dateRange = getVisibleDateRange(currentColumns);
     if (!dateRange) return;
 

@@ -79,7 +79,7 @@ async function fetchEvents(token, calendarId, timeMin, timeMax) {
       return {
         id: evt.id,
         title: evt.summary || '(No title)',
-        date: startDt.toISOString().slice(0, 10),
+        date: `${startDt.getFullYear()}-${String(startDt.getMonth() + 1).padStart(2, '0')}-${String(startDt.getDate()).padStart(2, '0')}`,
         start: isAllDay ? null : `${String(startDt.getHours()).padStart(2, '0')}:${String(startDt.getMinutes()).padStart(2, '0')}`,
         end: isAllDay ? null : `${String(endDt.getHours()).padStart(2, '0')}:${String(endDt.getMinutes()).padStart(2, '0')}`,
         isAllDay,
